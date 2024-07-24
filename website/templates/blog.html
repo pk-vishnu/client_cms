@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Preview Blog{% endblock %} {% block
+content %}
+
+<div
+  class="w-5/6 mx-auto h-56 border-b-gray-400/20 border-b-[1px] relative overflow-hidden"
+>
+  <img
+    src="{{ res['thumbnail'] }}"
+    alt="banner"
+    class="object-cover w-full h-full"
+  />
+  <div
+    class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-600/60"
+  ></div>
+</div>
+<div class="mx-auto w-full md:w-5/6 p-4 mt-4 space-y-4 font-poppins">
+  <h1 class="text-4xl font-bold tracking-wide mt-4">{{ res['title'] }}</h1>
+  <p class="font-medium text-slate-600">
+    Published by :
+    <span class="text-blue-700">{{ res['author'] }}</span>
+    &nbsp;
+    <span class="text-slate-400 text-sm font-normal"
+      >{{ res['date_created'] }}</span
+    >
+  </p>
+  <div class="prose max-w-screen-lg">{{ res['content'] | safe }}</div>
+</div>
+
+{% endblock %}

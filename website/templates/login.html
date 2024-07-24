@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+%}
+<section>
+  <div class="grid grid-cols-1 grid-flow-row gap-0 text-black mx-20">
+    <div>
+      <div
+        class="flex flex-col items-center justify-center px-3 py-0 mx-auto lg:py-0"
+      >
+        <div
+          class="w-full rounded-lg shadow dark:border md:mt-2 sm:max-w-md xl:p-0 dark:border-gray-700"
+        >
+          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1
+              class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl"
+            >
+              Login
+            </h1>
+            <form class="space-y-4 md:space-y-6" method="POST">
+              <div>
+                <label
+                  for="email"
+                  class="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Email</label
+                >
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="name@astute.ai"
+                  required=""
+                />
+              </div>
+              <div>
+                <label
+                  for="password"
+                  class="block mb-2 text-sm font-medium text-gray-900"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="••••••••"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required=""
+                />
+              </div>
+              <button
+                type="submit"
+                class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+              >
+                <span
+                  class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
+                >
+                  Login
+                </span>
+              </button>
+              <!-- <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                Don't have an account?
+                <a
+                  href="/sign-up"
+                  class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  >Sign Up</a
+                >
+              </p> -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
