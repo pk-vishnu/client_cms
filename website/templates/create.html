@@ -4,86 +4,16 @@ content %}
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
 />
-<h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">Create a Blog Post</h1>
+<h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">AI Blogger</h1>
 
 <div>
   <div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
     <form method="POST" class="space-y-4">
       <div class="mb-4">
-        <label for="title" class="block font-semibold">Title</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-        />
-      </div>
-      <div class="mb-4">
-        <label for="author" class="block font-semibold">Author</label>
-        <input
-          type="text"
-          id="author"
-          name="author"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-        />
-      </div>
-      <div
-        class="mb-4 w-full h-auto"
-        ondragenter="dragEnterhandler(event)"
-        ondrop="dropHandler(event,'thumbnail');"
-        ondragover="dragOverHandler(event);"
-        ondragleave="dragLeaveHandler(event)"
-      >
-        <label for="thumbnail" class="block font-semibold">Thumbnail URL</label>
-        <div class="relative">
-          <input
-            type="text"
-            id="thumbnail"
-            name="thumbnail"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-          />
-          <div
-            id="dropzone"
-            class="hidden absolute inset-0 bg-cyan-500 py-2 rounded-md gap-2 justify-center items-center"
-          >
-            <svg
-              class="w-7 h-7"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5"
-                  stroke="#2b2b2b"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-                <path
-                  d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
-                  stroke="#2b2b2b"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                ></path>
-              </g>
-            </svg>
-            <span class="font-medium text-slate-700">Drop your image</span>
-          </div>
-        </div>
-      </div>
-      <div
-        class="mb-4"
-        ondrop="dropHandler(event,'markdown-editor');"
-        ondragover="dragOverHandler(event);"
-      >
-        <label for="content" class="block font-semibold">Content</label>
+        <label for="content" class="block font-semibold text-xl"
+          >What's your Business Idea?</label
+        >
+        <br />
 
         <textarea
           id="markdown-editor"
@@ -98,7 +28,7 @@ content %}
         <span
           class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
         >
-          Submit
+          Generate Content
         </span>
       </button>
     </form>
