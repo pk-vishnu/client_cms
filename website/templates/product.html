@@ -1,0 +1,164 @@
+{% extends "base.html" %} {% block title %}Create Blog{% endblock %} {% block
+content %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
+/>
+<h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">AI Product Creator</h1>
+
+<div>
+  <div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
+    <form method="POST" class="space-y-4">
+      <div
+        class="mb-4 w-full h-auto"
+        ondragenter="dragEnterhandler(event)"
+        ondrop="dropHandler(event,'thumbnail');"
+        ondragover="dragOverHandler(event);"
+        ondragleave="dragLeaveHandler(event)"
+      >
+        <label for="thumbnail" class="block font-semibold"
+          >Upload Product Image</label
+        >
+        <div class="relative">
+          <input
+            type="text"
+            id="thumbnail"
+            name="thumbnail"
+            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+          />
+          <div
+            id="dropzone"
+            class="hidden absolute inset-0 bg-cyan-500 py-2 rounded-md gap-2 justify-center items-center"
+          >
+            <svg
+              class="w-7 h-7"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5"
+                  stroke="#2b2b2b"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
+                  stroke="#2b2b2b"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                ></path>
+              </g>
+            </svg>
+            <span class="font-medium text-slate-700">Drop your image</span>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="content" class="block font-semibold"
+          >Describe your product</label
+        >
+
+        <textarea
+          id="markdown-editor"
+          name="content"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+        ></textarea>
+      </div>
+      <button
+        type="submit"
+        class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+      >
+        <span
+          class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
+        >
+          Generate Content
+        </span>
+      </button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+  <script>
+    var simplemde = new SimpleMDE({
+      element: document.getElementById("markdown-editor"),
+    });
+    let editor = document.getElementById("markdown-editor");
+    let thumbnail = document.querySelector("#thumbnail");
+    let thumbDropZone = document.querySelector("#dropzone");
+
+    async function dropHandler(ev, id) {
+      console.log("File(s) dropped");
+
+      ev.preventDefault();
+      thumbDropZone.style.display = "none";
+
+      if (ev.dataTransfer.items) {
+        console.log("items");
+        const item = ev.dataTransfer.items[0];
+        if (item.kind === "file") {
+          const file = item.getAsFile();
+          imageUpload(file, id);
+        }
+      } else {
+        const item = ev.dataTransfer.files[0];
+        console.log(item);
+      }
+    }
+    function dragEnterhandler(ev) {
+      ev.preventDefault();
+      thumbDropZone.style.display = "flex";
+    }
+    function dragLeaveHandler(ev) {
+      ev.preventDefault();
+      thumbDropZone.style.display = "none";
+    }
+
+    function dragOverHandler(ev) {
+      ev.preventDefault();
+      thumbDropZone.style.display = "flex";
+    }
+
+    async function imageUpload(file, id) {
+      let formData = new FormData();
+      formData.append("image", file);
+      const data = await fetch("/upload", {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json());
+
+      if (id == "thumbnail") {
+        thumbnail.value = data.url;
+      } else if (id == "markdown-editor") {
+        cm = simplemde.codemirror;
+        start = cm.getCursor("start");
+        end = cm.getCursor("end");
+        value = simplemde.value();
+        imageUrl = `![${file.name}](${data.url})`;
+        beforeLine = value.split("\n").slice(0, start.line).join("\n");
+        currentLine =
+          value.split("\n")[start.line].slice(0, start.ch) +
+          imageUrl +
+          value.split("\n")[start.line].slice(start.ch) +
+          "\n";
+        console.log(currentLine);
+        afterLine = value
+          .split("\n")
+          .slice(start.line + 1)
+          .join("\n");
+
+        text = beforeLine + currentLine + afterLine;
+        simplemde.value(text);
+      }
+    }
+  </script>
+</div>
+{% endblock %}

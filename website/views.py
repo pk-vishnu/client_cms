@@ -155,3 +155,9 @@ def delete_image(id):
     db.session.commit()
     flash("Image deleted!", category='success')
     return redirect(url_for('views.asset_manager'))
+
+
+@views.route('/product')
+@login_required
+def product():
+    return render_template("product.html",user=current_user)
