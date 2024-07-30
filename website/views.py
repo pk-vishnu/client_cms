@@ -161,3 +161,13 @@ def delete_image(id):
 @login_required
 def product():
     return render_template("product.html",user=current_user)
+
+@views.route('/preview_site')
+@login_required
+def preview_site():
+    return render_template("preview_home.html",user=current_user)
+
+@views.route('/preview_products')
+@login_required
+def preview_products():
+    return render_template("preview_products.html",user=current_user)
