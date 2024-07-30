@@ -31,3 +31,22 @@ class Customer(db.Model):
     message = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content_md = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    images = db.relationship('ProductImage', backref='product', lazy=True)
+
+class ProductImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    image_data = db.Column(db.LargeBinary, nullable=False)
+    image_name = db.Column(db.String(255), nullable=False)
+    url = db.Column(db.String(255), nullable=False, unique=True)
+    
+class Description(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(1000))
+    description = db.Column(db.String(1000))
+    

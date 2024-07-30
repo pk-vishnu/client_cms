@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Create Product{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">Create Product</h1>
+
+<div>
+  <div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
+    <form id="productForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+      <div class="mb-4">
+        <label for="title" class="block font-semibold">Product Title</label>
+        <input type="text" id="title" name="title" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required />
+      </div>
+      <div class="mb-4 w-full h-auto">
+        <label class="block font-semibold">Upload Product Images</label>
+        <div class="relative">
+          <input type="file" id="images" name="images" multiple class="hidden" />
+          <div id="selectedImages" class="flex flex-wrap gap-2" style="padding: 5%;">
+            <div class="relative h-20 w-20 border border-gray-300 rounded-md overflow-hidden flex items-center justify-center cursor-pointer" id="addImageButton">
+              <i class="fas fa-plus fa-2x text-black"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="content" class="block font-semibold">Describe your product</label>
+        <textarea id="content" name="content" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required></textarea>
+      </div>
+      <div class="mb-4">
+        <button type="button" id="generateDescription" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+          <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800">Generate Description</span>
+        </button>
+      </div>
+      <button type="submit" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800">Create Product</span>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    let selectedFiles = [];
+
+    document.querySelector("#addImageButton").addEventListener("click", () => {
+      document.querySelector("#images").click();
+    });
+
+    document.querySelector("#images").addEventListener("change", handleFiles);
+
+    function handleFiles(event) {
+      let files = event.target.files;
+      let selectedImagesDiv = document.querySelector("#selectedImages");
+
+      for (let file of files) {
+        if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+          selectedFiles.push(file);
+          displayImage(file);
+        }
+      }
+      event.target.value = ''; 
+    }
+
+    function displayImage(file) {
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        let img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "h-12 w-12 object-cover cursor-pointer";
+        img.style.border = "2px solid #ddd";
+        img.style.borderRadius = "4px";
+        img.addEventListener("click", () => openInNewTab(file));
+        document.querySelector("#selectedImages").appendChild(img);
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function openInNewTab(file) {
+      const objectUrl = URL.createObjectURL(file);
+      window.open(objectUrl, '_blank');
+      
+      // Release object URL after opening the new tab
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 10000); // Adjust timeout as needed
+    }
+
+    document.querySelector("#productForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      let formData = new FormData(this);
+
+      for (let file of selectedFiles) {
+        formData.append("images", file);
+      }
+
+      try {
+        let response = await fetch(this.action, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert('Product created successfully');
+          selectedFiles = [];
+          document.querySelector("#selectedImages").innerHTML = '<div class="relative h-20 w-20 border border-gray-300 rounded-md overflow-hidden flex items-center justify-center cursor-pointer" id="addImageButton"><i class="fas fa-plus fa-2x text-gray-600"></i></div>';
+          this.reset(); 
+        } else {
+          alert('Failed to create product');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+      }
+    });
+
+    document.querySelector("#generateDescription").addEventListener("click", async function() {
+      let content = document.querySelector("#content").value;
+      try {
+        let response = await fetch("/generate-marketing-content", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ content: content })
+        });
+        if (response.ok) {
+          let data = await response.json();
+          document.querySelector("#content").value = data.generatedContent;
+        } else {
+          alert('Failed to generate description');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+      }
+    });
+    
+  </script>
+</div>
+{% endblock %}
