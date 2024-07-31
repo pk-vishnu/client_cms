@@ -1,29 +1,27 @@
 {% extends "base.html" %} {% block title %}Preview Blog{% endblock %} {% block
 content %}
-
-<div
-  class="w-5/6 mx-auto h-56 border-b-gray-400/20 border-b-[1px] relative overflow-hidden"
->
-  <img
-    src="{{ res['thumbnail'] }}"
-    alt="banner"
-    class="object-cover w-full h-full"
-  />
-  <div
-    class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-600/60"
-  ></div>
-</div>
 <div class="mx-auto w-full md:w-5/6 p-4 mt-4 space-y-4 font-poppins">
-  <h1 class="text-4xl font-bold tracking-wide mt-4">{{ res['title'] }}</h1>
-  <p class="font-medium text-slate-600">
-    Published by :
-    <span class="text-blue-700">{{ res['author'] }}</span>
-    &nbsp;
-    <span class="text-slate-400 text-sm font-normal"
-      >{{ res['date_created'] }}</span
+  <button
+    id="cycleBtn"
+    onclick="changeContent()"
+    class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+  >
+    <span
+      class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
     >
-  </p>
-  <div class="prose max-w-screen-lg">{{ res['content'] | safe }}</div>
+      Generate Again
+    </span>
+  </button>
+  <div id="content" class="prose max-w-screen-lg">{{ res[0] | safe }}</div>
 </div>
 
+<script>
+  let currentPage = 0;
+  const pages = {{ res|tojson }};
+
+  function changeContent() {
+    currentPage = (currentPage + 1) % pages.length;
+    document.getElementById('content').innerHTML = pages[currentPage];
+  }
+</script>
 {% endblock %}

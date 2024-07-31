@@ -4,109 +4,41 @@ content %}
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
 />
+
 <h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">AI Blogger</h1>
 
-<div>
-  <div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
-    <form method="POST" class="space-y-4">
-      <div class="mb-4">
-        <label for="content" class="block font-semibold text-xl"
-          >What's your Business Idea?</label
-        >
-        <br />
-
-        <textarea
-          id="markdown-editor"
-          name="content"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-        ></textarea>
-      </div>
-      <button
-        type="submit"
-        class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+<div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
+  <form method="POST" class="space-y-4">
+    <div class="mb-4">
+      <label for="content" class="block font-semibold text-xl"
+        >What's your Business Idea?</label
       >
-        <span
-          class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
-        >
-          Generate Content
-        </span>
-      </button>
-    </form>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-  <script>
-    var simplemde = new SimpleMDE({
-      element: document.getElementById("markdown-editor"),
-    });
-    let editor = document.getElementById("markdown-editor");
-    let thumbnail = document.querySelector("#thumbnail");
-    let thumbDropZone = document.querySelector("#dropzone");
-
-    async function dropHandler(ev, id) {
-      console.log("File(s) dropped");
-
-      ev.preventDefault();
-      thumbDropZone.style.display = "none";
-
-      if (ev.dataTransfer.items) {
-        console.log("items");
-        const item = ev.dataTransfer.items[0];
-        if (item.kind === "file") {
-          const file = item.getAsFile();
-          imageUpload(file, id);
-        }
-      } else {
-        const item = ev.dataTransfer.files[0];
-        console.log(item);
-      }
-    }
-    function dragEnterhandler(ev) {
-      ev.preventDefault();
-      thumbDropZone.style.display = "flex";
-    }
-    function dragLeaveHandler(ev) {
-      ev.preventDefault();
-      thumbDropZone.style.display = "none";
-    }
-
-    function dragOverHandler(ev) {
-      ev.preventDefault();
-      thumbDropZone.style.display = "flex";
-    }
-
-    async function imageUpload(file, id) {
-      let formData = new FormData();
-      formData.append("image", file);
-      const data = await fetch("/upload", {
-        method: "POST",
-        body: formData,
-      }).then((res) => res.json());
-
-      if (id == "thumbnail") {
-        thumbnail.value = data.url;
-      } else if (id == "markdown-editor") {
-        cm = simplemde.codemirror;
-        start = cm.getCursor("start");
-        end = cm.getCursor("end");
-        value = simplemde.value();
-        imageUrl = `![${file.name}](${data.url})`;
-        beforeLine = value.split("\n").slice(0, start.line).join("\n");
-        currentLine =
-          value.split("\n")[start.line].slice(0, start.ch) +
-          imageUrl +
-          value.split("\n")[start.line].slice(start.ch) +
-          "\n";
-        console.log(currentLine);
-        afterLine = value
-          .split("\n")
-          .slice(start.line + 1)
-          .join("\n");
-
-        text = beforeLine + currentLine + afterLine;
-        simplemde.value(text);
-      }
-    }
-  </script>
+      <br />
+      <textarea
+        id="markdown-editor"
+        name="prompt"
+        class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+        rows="4"
+      ></textarea>
+    </div>
+    <button
+      type="submit"
+      class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+    >
+      <span
+        class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-800"
+      >
+        Generate Content
+      </span>
+    </button>
+  </form>
+  <br />
 </div>
+
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+  new SimpleMDE({
+    element: document.getElementById("markdown-editor"),
+  });
+</script>
 {% endblock %}

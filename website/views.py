@@ -3,39 +3,30 @@ from flask_login import login_required, current_user
 import datetime
 import markdown2
 from . import db
-from .models import BlogPost
-from .models import Images
 import uuid
 import io 
-
+from .models import Blogger
 views = Blueprint('views', __name__)
 
 @views.route('/')
 def home():
     return render_template("home.html",user = current_user)
 
-@views.route('/create',methods=['GET','POST'])
+@views.route('/create', methods=['GET', 'POST'])
 @login_required
 def blogPost():
-    if request.method=='POST':
-        title=request.form['title']
-        author=request.form['author']
-        thumbnail=request.form['thumbnail']
-        md_content=request.form['content']
-        date_created=datetime.datetime.now()
-        html_content = markdown2.markdown(md_content)
-        blog_post = BlogPost(title=title,
-                        content_md=md_content,
-                        content_html=html_content,
-                        thumbnail=thumbnail,
-                        author=author,
-                        date_created=date_created)
-        db.session.add(blog_post)
-        db.session.commit()
-        flash("Blog Post Created!",category='success')
-        return redirect(url_for('views.home'))
+    response = None
+    if request.method == 'POST':
+        prompt = request.form['prompt']
+        blogger_entry = Blogger.query.filter_by(prompt=prompt).first()
+        if blogger_entry:
+            response = blogger_entry.response_list
+            return render_template("blog.html", user=current_user, res=response)
+        else:
+            flash("No responses found for the given prompt.", category='error')
 
-    return render_template("create.html",user=current_user)
+    return render_template("create.html", user=current_user, response=response)
+
 
 @views.route('/blog/<int:id>', methods=['GET'])
 def get_blog(id):
@@ -171,3 +162,4 @@ def preview_site():
 @login_required
 def preview_products():
     return render_template("preview_products.html",user=current_user)
+
