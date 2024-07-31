@@ -27,12 +27,6 @@ class Blogger(db.Model):
             self.response = self.RESPONSE_DELIMITER.join(value)
         else:
             self.response = ''
-    title = db.Column(db.String(100), nullable=False)
-    content_md = db.Column(db.Text, nullable=False)
-    content_html = db.Column(db.Text) 
-    thumbnail = db.Column(db.String(255))  
-    author = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Images(db.Model):
     id = db.Column(db.Integer, primary_key=True)

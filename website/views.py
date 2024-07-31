@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 import datetime
 import markdown2
 from . import db
-from .models import BlogPost, Product, ProductImage, Description
+from .models import Product, ProductImage, Description
 from .models import Images
 from .descriptionBot import generate_marketing_content
 import uuid
