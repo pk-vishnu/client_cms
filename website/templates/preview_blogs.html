@@ -1,0 +1,23 @@
+{% extends "preview.html" %} {% block title %}All Blogs{% endblock %} {% block
+content %}
+<div class="container mx-auto p-4">
+  <h1 class="text-3xl font-bold mb-4">All Blogs</h1>
+  <div class="flex flex-col space-y-4">
+    {% for blog in blogs %}
+    <div
+      class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-300"
+    >
+      <h2 class="text-xl font-semibold text-gray-900">
+        {{ blog.content[:50] | safe }}...
+      </h2>
+      <p class="mt-2 text-gray-700">{{ blog.content[:100] | safe }}...</p>
+      <a
+        href="{{ url_for('views.view_blog', blog_id=blog.id) }}"
+        class="text-violet-500 hover:underline mt-4 inline-block"
+        >Read More</a
+      >
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

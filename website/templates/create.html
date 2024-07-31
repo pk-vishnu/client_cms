@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Create Blog{% endblock %} {% block
+{% extends "base.html" %} {% block title %} Create Blog {% endblock %} {% block
 content %}
 <link
   rel="stylesheet"
@@ -8,7 +8,12 @@ content %}
 <h1 class="text-3xl font-poppins mx-auto ml-24 mb-9">AI Blogger</h1>
 
 <div class="mx-40 bg-gray-50 p-6 rounded-lg shadow-md">
-  <form method="POST" class="space-y-4">
+  <form
+    id="blogForm"
+    method="POST"
+    class="space-y-4"
+    action="{{ url_for('views.blogPost') }}"
+  >
     <div class="mb-4">
       <label for="content" class="block font-semibold text-xl"
         >What's your Business Idea?</label
@@ -39,6 +44,45 @@ content %}
 <script>
   new SimpleMDE({
     element: document.getElementById("markdown-editor"),
+  });
+
+  document.getElementById("blogForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    document.body.innerHTML = `
+    
+      <div class="spinner"></div>
+      <br>
+      <center><h1>Generating Content...</h1></center>
+      <style>
+        .spinner {
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #c473ff;
+          width: 120px;
+          height: 120px;
+          animation: spin 2s linear infinite;
+          margin: auto;
+          position: absolute;
+          top: 0; left: 0; bottom: 0; right: 0;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    fetch('{{ url_for("views.blogPost") }}', {
+      method: "POST",
+      body: new FormData(this),
+    })
+      .then((response) => {
+        return response.text();
+      })
+      .then((html) => {
+        document.open();
+        document.write(html);
+        document.close();
+      });
   });
 </script>
 {% endblock %}

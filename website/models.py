@@ -61,3 +61,6 @@ class Description(db.Model):
     content = db.Column(db.String(1000))
     description = db.Column(db.String(1000))
     
+class VerifiedBlog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)

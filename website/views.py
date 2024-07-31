@@ -9,8 +9,11 @@ from .descriptionBot import generate_marketing_content
 import uuid
 import io 
 from .models import Blogger
-views = Blueprint('views', __name__)
+from .models import VerifiedBlog
+from bleach import clean
 
+views = Blueprint('views', __name__)
+import time 
 @views.route('/')
 def home():
     return render_template("home.html",user = current_user)
@@ -18,15 +21,51 @@ def home():
 @views.route('/create', methods=['GET', 'POST'])
 @login_required
 def blogPost():
-    response = None
     if request.method == 'POST':
         prompt = request.form['prompt']
         blogger_entry = Blogger.query.filter_by(prompt=prompt).first()
+        
         if blogger_entry:
             response = blogger_entry.response_list
+            time.sleep(3)  # Simulate processing time
             return render_template("blog.html", user=current_user, res=response)
         else:
             flash("No responses found for the given prompt.", category='error')
+            return redirect(url_for('views.blogPost'))
+    return render_template("create.html", user=current_user)
+
+@views.route('/loading')
+@login_required
+def loading_screen():
+    response = session.pop('response', None)
+    return render_template("blog.html", user=current_user, res=response)
+
+
+@views.route('/verify', methods=['POST'])
+def verify_content():
+    content = request.json.get('content')
+    if content:
+        new_blog = VerifiedBlog(content=content)
+        db.session.add(new_blog)
+        db.session.commit()
+        flash("Blog post verified!", category='success')
+        return redirect(url_for('views.blogPost'))
+    return jsonify({"message": "No content provided"}), 400
+
+
+@views.route('/blogs', methods=['GET'])
+def list_blogs():
+    blogs = VerifiedBlog.query.all()
+    sanitized_blogs = [clean(blog.content, tags=['p', 'a', 'b', 'i', 'u'], attributes={'a': ['href']}) for blog in blogs]
+    return render_template('preview_blogs.html',blogs=blogs)
+
+@views.route('/blog/<int:blog_id>', methods=['GET'])
+def view_blog(blog_id):
+    blog = VerifiedBlog.query.get_or_404(blog_id)
+    return render_template('view_blog.html', blog=blog)
+
+
+
 # @views.route('/create',methods=['GET','POST'])
 # def blogPost():
 #     if request.method=='POST':
